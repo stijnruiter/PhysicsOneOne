@@ -1,4 +1,7 @@
 cmake_minimum_required( VERSION 3.6 )
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 
 project( PhysicsOneOne )
 
@@ -20,11 +23,20 @@ endif()
 
 set( PhysicsOneOneSource
         src/main.cpp
+
+        src/Logger.h
+        src/Logger.cpp
+        
+        src/gl_core.h
+        src/gl_core.cpp
+        
+        src/Engine.h
         )
 
 add_executable( PhysicsOneOne WIN32 ${PhysicsOneOneSource})
 
 target_link_libraries( PhysicsOneOne ${OPENGL_LIBRARIES} glfw GLAD)
+target_compile_definitions(PhysicsOneOne PRIVATE $<$<CONFIG:Debug>:DEBUG>)
 
 if( MSVC )
 	set_property( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PhysicsOneOne )
