@@ -82,13 +82,13 @@ int main()
     GLCHECK(glCompileShader(fragmentShader));
 
     GLint status;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
+    GLCHECK(glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status));
     if (status == GL_FALSE)
     {
         GLint length;
-        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &length);
+        GLCHECK(glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &length));
         GLchar* infoLog = new GLchar[length];
-        glGetShaderInfoLog(vertexShader, length, NULL, infoLog);
+        GLCHECK(glGetShaderInfoLog(vertexShader, length, NULL, infoLog));
 
         Engine::Logger::LogError("ERROR::SHADER::COMPILATION_FAILED");
         Engine::Logger::LogError(infoLog);
@@ -96,18 +96,18 @@ int main()
         DEBUGBREAK();
 
         delete[] infoLog;
-        glDeleteShader(vertexShader);
+        GLCHECK(glDeleteShader(vertexShader));
 
         return -1;
     }
 
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
+    GLCHECK(glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status));
     if (status == GL_FALSE)
     {
         GLint length;
-        glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &length);
+        GLCHECK(glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &length));
         GLchar* infoLog = new GLchar[length];
-        glGetShaderInfoLog(fragmentShader, length, NULL, infoLog);
+        GLCHECK(glGetShaderInfoLog(fragmentShader, length, NULL, infoLog));
 
         Engine::Logger::LogError("ERROR::SHADER::COMPILATION_FAILED");
         Engine::Logger::LogError(infoLog);
@@ -115,7 +115,7 @@ int main()
         DEBUGBREAK();
 
         delete[] infoLog;
-        glDeleteShader(fragmentShader);
+        GLCHECK(glDeleteShader(fragmentShader));
 
         return -1;
     }
@@ -125,13 +125,13 @@ int main()
     GLCHECK(glAttachShader(program, fragmentShader));
     GLCHECK(glLinkProgram(program));
 
-    glGetShaderiv(program, GL_LINK_STATUS, &status);
+    GLCHECK(glGetProgramiv(program, GL_LINK_STATUS, &status));
     if (status == GL_FALSE)
     {
         GLint length;
-        glGetShaderiv(program, GL_INFO_LOG_LENGTH, &length);
+        GLCHECK(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length));
         GLchar* infoLog = new GLchar[length];
-        glGetShaderInfoLog(program, length, NULL, infoLog);
+        GLCHECK(glGetProgramInfoLog(program, length, NULL, infoLog));
 
         Engine::Logger::LogError("ERROR::SHADER::LINK_ERROR");
         Engine::Logger::LogError(infoLog);
@@ -139,13 +139,13 @@ int main()
         DEBUGBREAK();
         delete[] infoLog;
 
-        glDeleteProgram(program);
+        GLCHECK(glDeleteProgram(program));
         program = 0;
         return -1;
     }
 
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    GLCHECK(glDeleteShader(vertexShader));
+    GLCHECK(glDeleteShader(fragmentShader));
 
     GLCHECK(glUseProgram(program));
 
@@ -190,10 +190,10 @@ int main()
     }
 
     // TODO: There are still some early returns
-    glDeleteBuffers(1, &vertexBuffer);
-    glDeleteBuffers(1, &elementBuffer);
-    glDeleteVertexArrays(1, &vertexArrayObject);
-    glDeleteProgram(program);
+    GLCHECK(glDeleteBuffers(1, &vertexBuffer));
+    GLCHECK(glDeleteBuffers(1, &elementBuffer));
+    GLCHECK(glDeleteVertexArrays(1, &vertexArrayObject));
+    GLCHECK(glDeleteProgram(program));
 
     Engine::Logger::LogVerbose("Close window");
     glfwTerminate();

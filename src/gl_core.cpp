@@ -4,7 +4,12 @@
 
 void Engine::GLClearErrors()
 {
-	while (glGetError() != GL_NO_ERROR);
+	GLenum err;
+	while ((err = glGetError()) != GL_NO_ERROR)
+	{
+		Logger::LogError(std::format("GLERROR still in queue {:#06x}", err));
+		DEBUGBREAK();
+	}
 }
 
 bool Engine::GLCheckErrors()
@@ -13,7 +18,7 @@ bool Engine::GLCheckErrors()
 	if((err = glGetError()) != GL_NO_ERROR)
 	{
 		// TODO: Format err code to readable error message
-		Logger::LogError(std::format("Glerror {:#04x}", err));
+		Logger::LogError(std::format("GLERROR {:#06x}", err));
 		return false;
 	}
 	return true;
