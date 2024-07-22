@@ -22,24 +22,31 @@ if( MSVC )
 endif()
 
 set( PhysicsOneOneSource
-        src/main.cpp
+        "src/main.cpp"
 
-        "src/Logger.hpp"
-        src/Logger.cpp
-        
-        "src/gl_debug.hpp"
-        "src/gl_debug.cpp"
-        
         "src/Engine.hpp"
 
-        "src/ShaderProgram.hpp"
-        src/ShaderProgram.cpp
-        "src/VertexBuffer.hpp"
-        src/VertexBuffer.cpp
-        "src/IndexBuffer.hpp"
-        src/IndexBuffer.cpp
+        "src/Logger.hpp" 
+        "src/Logger.cpp"
+
+        "src/gl_debug.hpp" 
+        "src/gl_debug.cpp"
+
+        "src/ShaderProgram.hpp" 
+        "src/ShaderProgram.cpp"
+
+        "src/VertexBuffer.hpp" 
+        "src/VertexBuffer.cpp"
+
+        "src/IndexBuffer.hpp" 
+        "src/IndexBuffer.cpp"
+
+        "src/VertexArrayObject.hpp"
+        "src/VertexArrayObject.cpp"   
         
- "src/VertexArrayObject.hpp" "src/VertexArrayObject.cpp"   "src/Renderer.hpp" "src/Renderer.cpp")
+        "src/Renderer.hpp" 
+        "src/Renderer.cpp"
+)
 
 add_executable( PhysicsOneOne WIN32 ${PhysicsOneOneSource})
 
