@@ -16,7 +16,15 @@ add_subdirectory( lib/glfw )
 add_subdirectory( lib/glm )
 
 include_directories(lib/glad/include)
-add_library(GLAD STATIC lib/glad/src/glad.c)
+add_library(glad STATIC lib/glad/src/glad.c)
+
+## Download only the stb_image.h libary, and add as static libary
+file(DOWNLOAD
+    https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
+    ${CMAKE_SOURCE_DIR}/lib/stb/include/stb/stb_image.h)
+include_directories(lib/stb/include)
+add_library(stb STATIC lib/stb/stb_image.cpp)
+
 
 if( MSVC )
     SET( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup" )
@@ -47,12 +55,22 @@ set( PhysicsOneOneSource
         
         "src/Renderer.hpp" 
         "src/Renderer.cpp"
+        
+        "src/Texture.hpp"
+        "src/Texture.cpp"
 )
 
 add_executable( PhysicsOneOne WIN32 ${PhysicsOneOneSource})
 
-target_link_libraries( PhysicsOneOne ${OPENGL_LIBRARIES} glfw GLAD glm)
+target_link_libraries( PhysicsOneOne ${OPENGL_LIBRARIES} glfw glad glm stb)
 target_compile_definitions(PhysicsOneOne PRIVATE $<$<CONFIG:Debug>:DEBUG>)
+
+## copy all assets to bin directory.
+## TODO: Make this more specific, copy directory is not great..
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/assets ${CMAKE_CURRENT_BINARY_DIR}/assets
+)
+add_dependencies(PhysicsOneOne copy_assets)
 
 if( MSVC )
 	set_property( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT PhysicsOneOne )

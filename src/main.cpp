@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <stb/stb_image.h>
 
 #include "Engine.hpp"
 
@@ -8,16 +9,23 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
 
 const std::string DEFAULT_FRAGMENT_SHADER = R"(
 #version 330 core
 
+in vec2 TexCoord;
 in vec3 vertex_color;
 out vec4 FragColor;
 
+uniform sampler2D ourTexture;
+
 void main()
 {
-    FragColor = vec4(vertex_color, 1.0f);
+    FragColor = texture(ourTexture, TexCoord) * vec4(vertex_color, 1.0);
 }
 )";
 
@@ -26,13 +34,16 @@ const std::string DEFAULT_VERTEX_SHADER = R"(
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 color;
+layout(location = 2) in vec2 texureCoordinates;
 
 out vec3 vertex_color;
+out vec2 TexCoord;
 
 void main()
 {
     gl_Position = vec4(position, 1.0);
     vertex_color = color;
+    TexCoord = texureCoordinates;
 }
 )";
 
@@ -59,14 +70,15 @@ int main()
         Engine::Logger::LogError("NOGLAD");
         return -1;
     }
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     Engine::Logger::LogVerbose("GLAD initialized");
 
     float vertices[] = {
-         -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-          0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-          0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-         -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
+         -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+          0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+          0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+         -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
     };
 
     float differentColors[] = {
@@ -100,9 +112,18 @@ int main()
         VertexBuffer vb(vertices, sizeof(vertices));
         vb.DefineFloatAttribute(shader.GetAttribLocation("position"), 3);
         vb.DefineFloatAttribute(shader.GetAttribLocation("color"), 3);
+        vb.DefineFloatAttribute(shader.GetAttribLocation("texureCoordinates"), 2);
         vao.AddBuffer(vb);
 
+        //VertexBuffer colorBuffer(differentColors, sizeof(differentColors));
+        //colorBuffer.DefineFloatAttribute(shader.GetAttribLocation("color"), 3);
+        //vao.AddBuffer(colorBuffer);
+
         IndexBuffer ib(indices, indicesCount);
+
+        Texture texture0("assets/flag.jpg");
+        texture0.SetWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+        texture0.SetMinMag(GL_LINEAR, GL_LINEAR);
 
         while (!glfwWindowShouldClose(window))
         {

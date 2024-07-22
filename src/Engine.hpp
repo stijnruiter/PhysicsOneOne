@@ -6,5 +6,6 @@
 #include "VertexBuffer.hpp"
 #include "IndexBuffer.hpp"
 #include "VertexArrayObject.hpp"
+#include "Texture.hpp"
 
 #include "Renderer.hpp"
