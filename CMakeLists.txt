@@ -13,6 +13,7 @@ set( GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only" )
 set( GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only" )
 
 add_subdirectory( lib/glfw )
+add_subdirectory( lib/glm )
 
 include_directories(lib/glad/include)
 add_library(GLAD STATIC lib/glad/src/glad.c)
@@ -50,7 +51,7 @@ set( PhysicsOneOneSource
 
 add_executable( PhysicsOneOne WIN32 ${PhysicsOneOneSource})
 
-target_link_libraries( PhysicsOneOne ${OPENGL_LIBRARIES} glfw GLAD)
+target_link_libraries( PhysicsOneOne ${OPENGL_LIBRARIES} glfw GLAD glm)
 target_compile_definitions(PhysicsOneOne PRIVATE $<$<CONFIG:Debug>:DEBUG>)
 
 if( MSVC )

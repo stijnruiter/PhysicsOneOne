@@ -1,8 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define ENGINE_LOG_LEVEL 2
-
 #include "Engine.hpp"
 
 void processInput(GLFWwindow* window)
@@ -63,7 +61,6 @@ int main()
     }
 
     Engine::Logger::LogVerbose("GLAD initialized");
-
 
     float vertices[] = {
          -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
