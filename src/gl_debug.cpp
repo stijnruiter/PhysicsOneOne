@@ -1,14 +1,13 @@
-#include "gl_core.h"
-#include "Logger.h"
-#include <format>
+#include "gl_debug.hpp"
+#include "Logger.hpp"
 
 void Engine::GLClearErrors()
 {
 	GLenum err;
 	while ((err = glGetError()) != GL_NO_ERROR)
 	{
-		Logger::LogError(std::format("GLERROR still in queue {:#06x}", err));
-		DEBUGBREAK();
+		Logger::LogError("GLERROR still in queue {:#06x}", err);
+		DEBUG_BREAK();
 	}
 }
 
@@ -18,7 +17,7 @@ bool Engine::GLCheckErrors()
 	if((err = glGetError()) != GL_NO_ERROR)
 	{
 		// TODO: Format err code to readable error message
-		Logger::LogError(std::format("GLERROR {:#06x}", err));
+		Logger::LogError("GLERROR {:#06x}", err);
 		return false;
 	}
 	return true;

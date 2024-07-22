@@ -1,9 +1,12 @@
-#include "Logger.h"
-#include <iostream>
+#include "Logger.hpp"
 #include <ctime>
-#include <format>
 
-inline std::tm localtime_xp_now()
+void Engine::Logger::Log(LogLevel level, std::string message)
+{
+    log << get_timestamp() << " [" << LogLevelString[level] << "]: " << message << std::endl;
+}
+
+std::tm Engine::Logger::localtime_xp_now()
 {
     std::time_t timer = std::time(0);
     std::tm bt{};
@@ -19,7 +22,7 @@ inline std::tm localtime_xp_now()
     return bt;
 }
 
-inline std::string get_timestamp() 
+std::string Engine::Logger::get_timestamp()
 {
     std::tm now = localtime_xp_now();
     return std::format("[{0}-{1:02d}-{2:02d} {3:02d}:{4:02d}:{5:02d}]",
@@ -32,20 +35,7 @@ inline std::string get_timestamp()
     );
 }
 
-void Engine::Logger::Log(LogLevel level, std::string message)
-{
-    log << get_timestamp() << " [" << LogLevelString[level] << "]: " << message << std::endl;
-}
 
-
-void Engine::Logger::LogVerbose(std::string message) { Log(LogLevel::Verbose, message); }
-
-void Engine::Logger::LogInfo(std::string message) { Log(LogLevel::Info, message); }
-
-void Engine::Logger::LogWarning(std::string message) { Log(LogLevel::Warning, message); }
-
-void Engine::Logger::LogError(std::string message) { Log(LogLevel::Error, message); }
-
-const char* Engine::Logger::LogLevelString[] = { "VERBOSE", "INFO", "WARNING", "ERROR" };
+const char* Engine::Logger::LogLevelString[] = { "CRITICAL", "ERROR", "WARNING", "INFO", "VERBOSE", "DEBUG" };
 
 std::ofstream Engine::Logger::log("logfile.txt", std::ios_base::app | std::ios_base::out);

@@ -1,7 +1,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Engine.h"
+#define ENGINE_LOG_LEVEL 2
+
+#include "Engine.hpp"
 
 void processInput(GLFWwindow* window)
 {
@@ -12,11 +14,12 @@ void processInput(GLFWwindow* window)
 const std::string DEFAULT_FRAGMENT_SHADER = R"(
 #version 330 core
 
+in vec3 vertex_color;
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
+    FragColor = vec4(vertex_color, 1.0f);
 }
 )";
 
@@ -24,10 +27,14 @@ const std::string DEFAULT_VERTEX_SHADER = R"(
 #version 330 core
 
 layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 color;
+
+out vec3 vertex_color;
 
 void main()
 {
     gl_Position = vec4(position, 1.0);
+    vertex_color = color;
 }
 )";
 
@@ -57,13 +64,19 @@ int main()
 
     Engine::Logger::LogVerbose("GLAD initialized");
 
-    GLCHECK(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
     float vertices[] = {
-         -0.5f, -0.5f, 0.0f,
-          0.5f, -0.5f, 0.0f,
-          0.5f,  0.5f, 0.0f,
-         -0.5f,  0.5f, 0.0f,
+         -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+          0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+          0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+         -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
+    };
+
+    float differentColors[] = {
+        0.0f, 0.0f, 0.0f,
+        1.0f, 1.0f, 1.0f,
+        0.0f, 1.0f, 0.0f,
+        1.0f, 0.0f, 1.0f,
     };
 
     unsigned int indices[] = {
@@ -71,130 +84,40 @@ int main()
         0, 2, 3
     };
 
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    const char* vSource = DEFAULT_VERTEX_SHADER.c_str();
-    GLCHECK(glShaderSource(vertexShader, 1, &vSource, NULL));
-    GLCHECK(glCompileShader(vertexShader));
+    unsigned int indicesCount = sizeof(indices) / sizeof(unsigned int);
+    ASSERT(indicesCount == 6);
 
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    const char* fSource = DEFAULT_FRAGMENT_SHADER.c_str();
-    GLCHECK(glShaderSource(fragmentShader, 1, &fSource, NULL));
-    GLCHECK(glCompileShader(fragmentShader));
+    {// local scope for GL destructors before the context is deleted
+        Renderer renderer;
+        renderer.SetClearColor(0.2f, 0.3f, 0.3f);
 
-    GLint status;
-    GLCHECK(glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status));
-    if (status == GL_FALSE)
-    {
-        GLint length;
-        GLCHECK(glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &length));
-        GLchar* infoLog = new GLchar[length];
-        GLCHECK(glGetShaderInfoLog(vertexShader, length, NULL, infoLog));
+        Engine::Logger::LogCritical("Hello world");
+        Engine::Logger::LogCritical("Hello world {0}", 123);
 
-        Engine::Logger::LogError("ERROR::SHADER::COMPILATION_FAILED");
-        Engine::Logger::LogError(infoLog);
+        ShaderProgram shader("DEFAULT_SHADER");
+        shader.Create(DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER);
+        shader.Use();
+        
+        VertexArrayObject vao;
+        
+        VertexBuffer vb(vertices, sizeof(vertices));
+        vb.DefineFloatAttribute(shader.GetAttribLocation("position"), 3);
+        vb.DefineFloatAttribute(shader.GetAttribLocation("color"), 3);
+        vao.AddBuffer(vb);
 
-        DEBUGBREAK();
+        IndexBuffer ib(indices, indicesCount);
 
-        delete[] infoLog;
-        GLCHECK(glDeleteShader(vertexShader));
+        while (!glfwWindowShouldClose(window))
+        {
+            processInput(window);
 
-        return -1;
+            renderer.Clear();
+            renderer.Draw(vao, ib, shader);
+
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
     }
-
-    GLCHECK(glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status));
-    if (status == GL_FALSE)
-    {
-        GLint length;
-        GLCHECK(glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &length));
-        GLchar* infoLog = new GLchar[length];
-        GLCHECK(glGetShaderInfoLog(fragmentShader, length, NULL, infoLog));
-
-        Engine::Logger::LogError("ERROR::SHADER::COMPILATION_FAILED");
-        Engine::Logger::LogError(infoLog);
-
-        DEBUGBREAK();
-
-        delete[] infoLog;
-        GLCHECK(glDeleteShader(fragmentShader));
-
-        return -1;
-    }
-
-    GLuint program = glCreateProgram();
-    GLCHECK(glAttachShader(program, vertexShader));
-    GLCHECK(glAttachShader(program, fragmentShader));
-    GLCHECK(glLinkProgram(program));
-
-    GLCHECK(glGetProgramiv(program, GL_LINK_STATUS, &status));
-    if (status == GL_FALSE)
-    {
-        GLint length;
-        GLCHECK(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length));
-        GLchar* infoLog = new GLchar[length];
-        GLCHECK(glGetProgramInfoLog(program, length, NULL, infoLog));
-
-        Engine::Logger::LogError("ERROR::SHADER::LINK_ERROR");
-        Engine::Logger::LogError(infoLog);
-
-        DEBUGBREAK();
-        delete[] infoLog;
-
-        GLCHECK(glDeleteProgram(program));
-        program = 0;
-        return -1;
-    }
-
-    GLCHECK(glDeleteShader(vertexShader));
-    GLCHECK(glDeleteShader(fragmentShader));
-
-    GLCHECK(glUseProgram(program));
-
-
-    unsigned int vertexArrayObject;
-    GLCHECK(glGenVertexArrays(1, &vertexArrayObject));
-    GLCHECK(glBindVertexArray(vertexArrayObject));
-
-    unsigned int vertexBuffer;
-    GLCHECK(glGenBuffers(1, &vertexBuffer));
-    GLCHECK(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer));
-    GLCHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
-
-    int location = glGetAttribLocation(program, "position");
-    if (location < 0)
-    {
-        Engine::Logger::LogError("Unable to retrieve attribute location for 'position'.");
-        DEBUGBREAK();
-        return -1;
-    }
-
-    GLCHECK(glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
-    GLCHECK(glEnableVertexAttribArray(location));
-
-    unsigned int elementBuffer;
-    GLCHECK(glGenBuffers(1, &elementBuffer));
-    GLCHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer));
-    GLCHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
-
-    while (!glfwWindowShouldClose(window))
-    {
-        processInput(window);
-
-        GLCHECK(glClear(GL_COLOR_BUFFER_BIT));
-
-        GLCHECK(glUseProgram(program));
-        GLCHECK(glBindVertexArray(vertexArrayObject));
-        GLCHECK(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL));
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-
-    // TODO: There are still some early returns
-    GLCHECK(glDeleteBuffers(1, &vertexBuffer));
-    GLCHECK(glDeleteBuffers(1, &elementBuffer));
-    GLCHECK(glDeleteVertexArrays(1, &vertexArrayObject));
-    GLCHECK(glDeleteProgram(program));
-
     Engine::Logger::LogVerbose("Close window");
     glfwTerminate();
     return 0;

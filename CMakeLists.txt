@@ -24,14 +24,22 @@ endif()
 set( PhysicsOneOneSource
         src/main.cpp
 
-        src/Logger.h
+        "src/Logger.hpp"
         src/Logger.cpp
         
-        src/gl_core.h
-        src/gl_core.cpp
+        "src/gl_debug.hpp"
+        "src/gl_debug.cpp"
         
-        src/Engine.h
-        )
+        "src/Engine.hpp"
+
+        "src/ShaderProgram.hpp"
+        src/ShaderProgram.cpp
+        "src/VertexBuffer.hpp"
+        src/VertexBuffer.cpp
+        "src/IndexBuffer.hpp"
+        src/IndexBuffer.cpp
+        
+ "src/VertexArrayObject.hpp" "src/VertexArrayObject.cpp"   "src/Renderer.hpp" "src/Renderer.cpp")
 
 add_executable( PhysicsOneOne WIN32 ${PhysicsOneOneSource})
 
