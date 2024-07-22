@@ -2,6 +2,7 @@
 
 #include <glad\glad.h>
 #include <string>
+#include <glm/glm.hpp>
 
 class ShaderProgram
 {
@@ -20,6 +21,9 @@ public:
 	void Create(const std::string& vertexSource, const std::string& fragmentSource);
 
 	int GetAttribLocation(const std::string& attribName);
+	int GetUniformLocation(const std::string& uniformName);
+
+	void SetUniformMatrix4(const std::string& uniformName, glm::mat4& mat);
 
 	void Use() const;
 	void Unuse() const;

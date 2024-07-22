@@ -2,6 +2,8 @@
 #include "Logger.hpp"
 #include "gl_debug.hpp"
 
+#include <glm/gtc/type_ptr.hpp>
+
 using namespace Engine;
 
 unsigned int ShaderProgram::LoadFromSource(const GLenum shaderType, const std::string& source) const
@@ -123,6 +125,28 @@ int ShaderProgram::GetAttribLocation(const std::string& attribName)
 		return -1;
 	}
 	return location;
+}
+
+int ShaderProgram::GetUniformLocation(const std::string& uniformName)
+{
+	int location = glGetUniformLocation(programId, uniformName.c_str());
+	if (location < 0)
+	{
+		Logger::LogError("Unable to retrieve attribute location for '{0}'.", uniformName);
+		DEBUG_BREAK();
+		return -1;
+	}
+	return location;
+}
+
+void ShaderProgram::SetUniformMatrix4(const std::string& uniformName, glm::mat4& mat)
+{
+	int uniformLocation = GetUniformLocation(uniformName);
+	if (uniformLocation < 0)
+		return;
+
+	Use();
+	GLCHECK(glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(mat)));
 }
 
 void ShaderProgram::Use() const
