@@ -7,5 +7,6 @@
 #include "IndexBuffer.hpp"
 #include "VertexArrayObject.hpp"
 #include "Texture.hpp"
+#include "Camera.hpp"
 
 #include "Renderer.hpp"

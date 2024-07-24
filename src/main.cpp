@@ -12,16 +12,25 @@
 inline int Width(800);
 inline int Height(600);
 
-void processInput(GLFWwindow* window)
+inline Camera camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, -1));
+
+void processInput(GLFWwindow* window, double deltaTime)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    camera.UpdateInput(window, (float)deltaTime);
 }
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     Width = width;
     Height = height;
     glViewport(0, 0, width, height);
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    camera.UpdateMouse(xpos, ypos);
 }
 
 const std::string DEFAULT_FRAGMENT_SHADER = R"(
@@ -78,13 +87,15 @@ int main()
     Engine::Logger::LogVerbose("GLFW initialized");
 
     glfwMakeContextCurrent(window);
-
+    
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         Engine::Logger::LogError("NOGLAD");
         return -1;
     }
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);
     
     Engine::Logger::LogVerbose("GLAD initialized");
 
@@ -167,19 +178,21 @@ int main()
 
         GLCHECK(glEnable(GL_DEPTH_TEST));
 
+        double deltaTime = 0.0;
+        double lastFrame = 0.0;
         while (!glfwWindowShouldClose(window))
         {
-            processInput(window);
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+            double currentFrame = glfwGetTime();
+            deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;
 
-            glm::mat4 view = glm::mat4(1.0f);
-            view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-            glm::mat4 projection;
-            projection = glm::perspective(glm::radians(45.0f), (float)Width / Height, 0.1f, 100.0f);
+            processInput(window, deltaTime);
+            glm::mat4 model(1);
+            model = glm::rotate(model, (float)currentFrame, glm::vec3(0, 1, 0));
+            glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)Width / Height, 0.1f, 100.0f);
 
             shader.SetUniformMatrix4("model", model);
-            shader.SetUniformMatrix4("view", view);
+            shader.SetUniformMatrix4("view", camera.GetView());
             shader.SetUniformMatrix4("projection", projection);
 
             renderer.Clear();

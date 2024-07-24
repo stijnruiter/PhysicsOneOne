@@ -58,7 +58,12 @@ set( PhysicsOneOneSource
         
         "src/Texture.hpp"
         "src/Texture.cpp"
-)
+        
+        "src/Camera.hpp"
+        "src/Camera.cpp"
+
+        "src/Math.hpp"
+ )
 
 add_executable( PhysicsOneOne WIN32 ${PhysicsOneOneSource})
 

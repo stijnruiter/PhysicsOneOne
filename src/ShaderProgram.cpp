@@ -139,7 +139,7 @@ int ShaderProgram::GetUniformLocation(const std::string& uniformName)
 	return location;
 }
 
-void ShaderProgram::SetUniformMatrix4(const std::string& uniformName, glm::mat4& mat)
+void ShaderProgram::SetUniformMatrix4(const std::string& uniformName, const glm::mat4& mat)
 {
 	int uniformLocation = GetUniformLocation(uniformName);
 	if (uniformLocation < 0)
