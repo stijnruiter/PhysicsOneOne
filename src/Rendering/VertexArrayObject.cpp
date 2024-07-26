@@ -1,7 +1,7 @@
 #include "VertexArrayObject.hpp"
 
-#include "gl_debug.hpp"
-#include "Logger.hpp"
+#include "../Debug/gl_debug.hpp"
+#include "../Logger.hpp"
 
 VertexArrayObject::VertexArrayObject()
 {

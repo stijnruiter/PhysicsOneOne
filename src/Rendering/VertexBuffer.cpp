@@ -1,6 +1,6 @@
 #include "VertexBuffer.hpp"
 
-#include "gl_debug.hpp"
+#include "../Debug/gl_debug.hpp"
 
 VertexBuffer::VertexBuffer(const void* data, const size_t size, const GLenum usage) 
     : m_stride(0)

@@ -1,7 +1,7 @@
 #include "Renderer.hpp"
 
-#include <glad\glad.h>
-#include "gl_debug.hpp"
+#include <glad/glad.h>
+#include "../Debug/gl_debug.hpp"
 
 Renderer::Renderer()
 {

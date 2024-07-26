@@ -1,6 +1,6 @@
 #include "IndexBuffer.hpp"
 
-#include "gl_debug.hpp"
+#include "../Debug/gl_debug.hpp"
 
 IndexBuffer::IndexBuffer(const unsigned int* indices, const size_t count, GLenum usage)
 {

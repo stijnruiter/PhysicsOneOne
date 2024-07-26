@@ -1,17 +1,16 @@
 #pragma once
-#include "gl_debug.hpp"
+#include "Debug/gl_debug.hpp"
 #include "Logger.hpp"
 
-#include "ShaderProgram.hpp"
-#include "VertexBuffer.hpp"
-#include "IndexBuffer.hpp"
-#include "VertexArrayObject.hpp"
-#include "Texture.hpp"
+#include "Rendering/ShaderProgram.hpp"
+#include "Rendering/VertexBuffer.hpp"
+#include "Rendering/IndexBuffer.hpp"
+#include "Rendering/VertexArrayObject.hpp"
+#include "Rendering/Texture.hpp"
+#include "Rendering/Renderer.hpp"
+
 #include "Camera.hpp"
-
 #include "Window.hpp"
-
-#include "Renderer.hpp"
 
 #include "Scene\SceneBase.hpp"
 #include "Scene\RotatingCube.hpp"

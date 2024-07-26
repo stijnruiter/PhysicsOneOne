@@ -1,5 +1,5 @@
 #include "gl_debug.hpp"
-#include "Logger.hpp"
+#include "../Logger.hpp"
 
 void Engine::GLClearErrors()
 {

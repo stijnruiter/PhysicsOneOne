@@ -38,26 +38,26 @@ set( PhysicsOneOneSource
         "src/Logger.hpp" 
         "src/Logger.cpp"
 
-        "src/gl_debug.hpp" 
-        "src/gl_debug.cpp"
+        "src/Debug/gl_debug.hpp" 
+        "src/Debug/gl_debug.cpp"
 
-        "src/ShaderProgram.hpp" 
-        "src/ShaderProgram.cpp"
+        "src/Rendering/ShaderProgram.hpp" 
+        "src/Rendering/ShaderProgram.cpp"
 
-        "src/VertexBuffer.hpp" 
-        "src/VertexBuffer.cpp"
+        "src/Rendering/VertexBuffer.hpp" 
+        "src/Rendering/VertexBuffer.cpp"
 
-        "src/IndexBuffer.hpp" 
-        "src/IndexBuffer.cpp"
+        "src/Rendering/IndexBuffer.hpp" 
+        "src/Rendering/IndexBuffer.cpp"
 
-        "src/VertexArrayObject.hpp"
-        "src/VertexArrayObject.cpp"   
+        "src/Rendering/VertexArrayObject.hpp"
+        "src/Rendering/VertexArrayObject.cpp"   
         
-        "src/Renderer.hpp" 
-        "src/Renderer.cpp"
+        "src/Rendering/Renderer.hpp" 
+        "src/Rendering/Renderer.cpp"
         
-        "src/Texture.hpp"
-        "src/Texture.cpp"
+        "src/Rendering/Texture.hpp"
+        "src/Rendering/Texture.cpp"
         
         "src/Camera.hpp"
         "src/Camera.cpp"

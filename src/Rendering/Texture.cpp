@@ -1,8 +1,8 @@
 #include "Texture.hpp"
 
 #include <stb/stb_image.h>
-#include "gl_debug.hpp"
-#include "Logger.hpp"
+#include "../Debug/gl_debug.hpp"
+#include "../Logger.hpp"
 
 Texture::Texture(const std::string& imageFilePath, const GLenum slot) : m_textureSlot(slot)
 {

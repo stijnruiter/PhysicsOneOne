@@ -1,7 +1,8 @@
 #pragma once
 
 #include "SceneBase.hpp"
-#include "..\Texture.hpp"
+#include "../Rendering/Renderer.hpp"
+#include "../Rendering/Texture.hpp"
 #include <glm\glm.hpp>
 
 #include <memory>

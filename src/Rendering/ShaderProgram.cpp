@@ -1,6 +1,6 @@
 #include "ShaderProgram.hpp"
-#include "Logger.hpp"
-#include "gl_debug.hpp"
+#include "../Logger.hpp"
+#include "../Debug/gl_debug.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
