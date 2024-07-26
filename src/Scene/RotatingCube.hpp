@@ -4,18 +4,20 @@
 #include "..\Texture.hpp"
 #include <glm\glm.hpp>
 
+#include <memory>
+
 class RotatingCube : public SceneBase
 {
 private:
-	ShaderProgram* m_shader;
-	VertexArrayObject* m_vertexArrayObject;
-	VertexBuffer* m_vertexBuffer;
-	VertexBuffer* m_colorBuffer;
-	IndexBuffer* m_indexBuffer;
-	Texture* m_texture;
+	std::unique_ptr<ShaderProgram> m_shader;
+	std::unique_ptr<VertexArrayObject> m_vertexArrayObject;
+	std::unique_ptr<VertexBuffer> m_vertexBuffer;
+	std::unique_ptr<VertexBuffer> m_colorBuffer;
+	std::unique_ptr<IndexBuffer> m_indexBuffer;
+	std::unique_ptr<Texture> m_texture;
 public:
 	RotatingCube();
-	~RotatingCube();
+	~RotatingCube() { }
 	void Render(Renderer& renderer, Camera& camera);
 
 };

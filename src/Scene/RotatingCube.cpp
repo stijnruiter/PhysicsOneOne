@@ -52,38 +52,28 @@ RotatingCube::RotatingCube()
         4, 6, 7
     };
 
-    m_shader = new ShaderProgram("ROTATING_CUBE");
+    m_shader = std::make_unique<ShaderProgram>("ROTATING_CUBE");
     m_shader->Create(DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER);
     m_shader->Use();
 
-    m_vertexArrayObject = new VertexArrayObject();
+    m_vertexArrayObject = std::make_unique<VertexArrayObject>();
     m_vertexArrayObject->Bind();
 
-    m_vertexBuffer = new VertexBuffer(vertices, sizeof(vertices));
+    m_vertexBuffer = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
     m_vertexBuffer->DefineFloatAttribute(m_shader->GetAttribLocation("position"), 3);
     m_vertexBuffer->DefineFloatAttribute(m_shader->GetAttribLocation("color"), 3);
     m_vertexBuffer->DefineFloatAttribute(m_shader->GetAttribLocation("texureCoordinates"), 2);
     m_vertexArrayObject->AddBuffer(*m_vertexBuffer);
 
-    m_colorBuffer = new VertexBuffer(differentColors, sizeof(differentColors));
+    m_colorBuffer = std::make_unique<VertexBuffer>(differentColors, sizeof(differentColors));
     m_colorBuffer->DefineFloatAttribute(m_shader->GetAttribLocation("color"), 3);
     m_vertexArrayObject->AddBuffer(*m_colorBuffer);
 
-    m_indexBuffer = new IndexBuffer(indices, sizeof(indices) / sizeof(unsigned int));
+    m_indexBuffer = std::make_unique<IndexBuffer>(indices, sizeof(indices) / sizeof(unsigned int));
 
-    m_texture = new Texture("assets/flag.jpg");
+    m_texture = std::make_unique<Texture>("assets/flag.jpg");
     m_texture->SetWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
     m_texture->SetMinMag(GL_LINEAR, GL_LINEAR);
-}
-
-RotatingCube::~RotatingCube()
-{
-    delete m_shader;
-    delete m_vertexArrayObject;
-    delete m_indexBuffer;
-    delete m_vertexBuffer;
-    delete m_colorBuffer;
-    delete m_texture;
 }
 
 void RotatingCube::Render(Renderer& renderer, Camera& camera)

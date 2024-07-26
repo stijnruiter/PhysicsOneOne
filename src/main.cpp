@@ -8,6 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <memory>
+
 inline Camera camera(800, 600, glm::vec3(0, 0, 3), glm::vec3(0, 0, -1));
 
 void processInput(Window& window, double deltaTime)
@@ -42,7 +44,7 @@ int main()
         Renderer renderer;
         renderer.SetClearColor(0.2f, 0.3f, 0.3f);
 
-        SceneBase* scene = new RotatingCube();
+        std::unique_ptr<SceneBase> scene = std::make_unique<RotatingCube>();
 
         GLCHECK(glEnable(GL_DEPTH_TEST));
 
@@ -62,7 +64,6 @@ int main()
             window.SwapBuffers();
             glfwPollEvents();
         }
-        delete scene;
     }
     Engine::Logger::LogVerbose("Close window");
     return 0;
