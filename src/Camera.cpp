@@ -8,7 +8,7 @@ void Camera::UpdateView()
     view = glm::lookAt(position, position + cameraDirection, cameraUp);
 }
 
-Camera::Camera(glm::vec3 position, glm::vec3 direction)
+Camera::Camera(unsigned int screenWidth, unsigned int screenHeight, glm::vec3 position, glm::vec3 direction)
     : position(position), cameraDirection(glm::normalize(direction)), worldUp(0, 1, 0)
 {
     glm::vec3 cameraLeft = glm::normalize(glm::cross(worldUp, cameraDirection));
@@ -19,6 +19,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction)
     yaw = abs(cosPitch) < 0.01f ? 0.0f : acos(cameraDirection.x / cosPitch);
 
     UpdateView();
+    UpdateFrameBuffer(screenWidth, screenHeight);
 }
 
 void Camera::UpdateInput(Window& window, float deltaTime)
@@ -84,7 +85,17 @@ void Camera::UpdateMouse(double x, double y)
     lastY = y;
 }
 
+void Camera::UpdateFrameBuffer(unsigned int width, unsigned int height)
+{
+    m_projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+}
+
 const glm::mat4& Camera::GetView() const
 {
     return view;
+}
+
+const glm::mat4& Camera::GetProjection() const
+{
+    return m_projection;
 }

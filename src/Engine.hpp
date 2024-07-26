@@ -12,3 +12,6 @@
 #include "Window.hpp"
 
 #include "Renderer.hpp"
+
+#include "Scene\SceneBase.hpp"
+#include "Scene\RotatingCube.hpp"

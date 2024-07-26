@@ -22,14 +22,17 @@ private:
 	bool mouseInitialized = false;
 
 	glm::mat4 view = glm::mat4(1.0);
+	glm::mat4 m_projection = glm::mat4(1.0);
 
 	void UpdateView();
 
 public:
-	Camera(glm::vec3 position, glm::vec3 target);
+	Camera(unsigned int screenWidth, unsigned int screenHeight, glm::vec3 position, glm::vec3 target);
 
 	void UpdateInput(Window& window, float deltaTime);
 	void UpdateMouse(double x, double y);
+	void UpdateFrameBuffer(unsigned int width, unsigned int height);
 
 	const glm::mat4& GetView() const;
+	const glm::mat4& GetProjection() const;
 };
