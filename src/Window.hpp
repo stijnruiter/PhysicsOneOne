@@ -19,7 +19,7 @@ private:
 
 	void AttachEventCallbacks();
 	
-	void(*m_callbackFrameBuffer)(int width, int height);
+	void(*m_callbackFrameBuffer)(unsigned int width, unsigned int height);
 	void(*m_callbackCursorPos)(double cursorX, double cursorY);
 	void(*m_callbackKey)(int key, int scancode, int action, int mods);
 
@@ -33,7 +33,7 @@ public:
 
 	void Close();
 
-	void SetFrameBufferCallback(void(*callback)(int width, int height)) { m_callbackFrameBuffer = callback; }
+	void SetFrameBufferCallback(void(*callback)(unsigned int width, unsigned int height)) { m_callbackFrameBuffer = callback; }
 	void SetCursorPosCallback(void(*callback)(double cursorX, double cursorY)) { m_callbackCursorPos = callback; }
 	void SetKeyCallback(void(*callback)(int key, int scancode, int action, int mods)) { m_callbackKey = callback; }
 

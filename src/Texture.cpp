@@ -4,10 +4,10 @@
 #include "gl_debug.hpp"
 #include "Logger.hpp"
 
-Texture::Texture(const std::string& imageFilePath, const GLenum slot) : textureSlot(slot)
+Texture::Texture(const std::string& imageFilePath, const GLenum slot) : m_textureSlot(slot)
 {
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load(imageFilePath.c_str(), &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(imageFilePath.c_str(), &m_width, &m_height, &nrChannels, 0);
     if (!data)
     {
         Engine::Logger::LogError("Failed to load texture '{0}'", imageFilePath);
@@ -15,18 +15,18 @@ Texture::Texture(const std::string& imageFilePath, const GLenum slot) : textureS
         return;
     }
 
-    if (width % 4 != 0)
+    if (m_width % 4 != 0)
     {
         // in case the width is not a multiple of 4, just set it to 1
         // TODO: check how to properly handle this, set always to 1, or find max integer, or change images.
         GLCHECK(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
     }
     
-    GLCHECK(glGenTextures(1, &textureId));
-    GLCHECK(glActiveTexture(textureSlot));
-    GLCHECK(glBindTexture(GL_TEXTURE_2D, textureId));
+    GLCHECK(glGenTextures(1, &m_textureId));
+    GLCHECK(glActiveTexture(m_textureSlot));
+    GLCHECK(glBindTexture(GL_TEXTURE_2D, m_textureId));
 
-    GLCHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
+    GLCHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
     GLCHECK(glGenerateMipmap(GL_TEXTURE_2D));
 
     stbi_image_free(data);
@@ -34,8 +34,8 @@ Texture::Texture(const std::string& imageFilePath, const GLenum slot) : textureS
 
 Texture::~Texture()
 {
-    glDeleteTextures(1, &textureId);
-    textureId = 0;
+    glDeleteTextures(1, &m_textureId);
+    m_textureId = 0;
 }
 
 void Texture::SetWrap(GLenum wrapOptionS, GLenum wrapOptionT) const
@@ -61,12 +61,12 @@ void Texture::SetParameter(GLenum name, GLenum value) const
 
 void Texture::Bind() const
 {
-    GLCHECK(glActiveTexture(textureSlot));
-    GLCHECK(glBindTexture(GL_TEXTURE_2D, textureId));
+    GLCHECK(glActiveTexture(m_textureSlot));
+    GLCHECK(glBindTexture(GL_TEXTURE_2D, m_textureId));
 }
 
 void Texture::Unbind() const
 {
-    GLCHECK(glActiveTexture(textureSlot));
+    GLCHECK(glActiveTexture(m_textureSlot));
     GLCHECK(glBindTexture(GL_TEXTURE_2D, 0));
 }

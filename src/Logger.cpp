@@ -3,7 +3,7 @@
 
 void Engine::Logger::Log(LogLevel level, std::string message)
 {
-    log << get_timestamp() << " [" << LogLevelString[level] << "]: " << message << std::endl;
+    s_log << get_timestamp() << " [" << s_logLevelString[level] << "]: " << message << std::endl;
 }
 
 std::tm Engine::Logger::localtime_xp_now()
@@ -36,6 +36,6 @@ std::string Engine::Logger::get_timestamp()
 }
 
 
-const char* Engine::Logger::LogLevelString[] = { "CRITICAL", "ERROR", "WARNING", "INFO", "VERBOSE", "DEBUG" };
+const char* Engine::Logger::s_logLevelString[] = { "CRITICAL", "ERROR", "WARNING", "INFO", "VERBOSE", "DEBUG" };
 
-std::ofstream Engine::Logger::log("logfile.txt", std::ios_base::app | std::ios_base::out);
+std::ofstream Engine::Logger::s_log("logfile.txt", std::ios_base::app | std::ios_base::out);

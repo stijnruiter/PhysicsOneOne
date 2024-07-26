@@ -4,7 +4,7 @@
 class VertexArrayObject
 {
 private:
-	unsigned int vertexArrayId;
+	unsigned int m_vertexArrayId;
 
 public:
 	VertexArrayObject();

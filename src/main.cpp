@@ -34,7 +34,7 @@ int main()
     { 
         camera.UpdateMouse(x, y); // bind callback directly?
     }); 
-    window.SetFrameBufferCallback([](int width, int height) 
+    window.SetFrameBufferCallback([](unsigned int width, unsigned int height) 
     { 
         camera.UpdateFrameBuffer(width, height); 
         glViewport(0, 0, width, height); 

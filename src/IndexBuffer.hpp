@@ -5,14 +5,15 @@
 class IndexBuffer
 {
 private:
-	unsigned int bufferId;
-	unsigned int count;
+	unsigned int m_bufferId;
+	size_t m_count;
+
 public:
-	IndexBuffer(const unsigned int* indices, const int count, GLenum usage = GL_STATIC_DRAW);
+	IndexBuffer(const unsigned int* indices, const size_t count, GLenum usage = GL_STATIC_DRAW);
 	~IndexBuffer();
 
 	void Bind() const;
 	void Unbind() const;
 
-	unsigned int GetCount() const;
+	size_t GetCount() const;
 };

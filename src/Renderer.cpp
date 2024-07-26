@@ -25,5 +25,5 @@ void Renderer::Draw(const VertexArrayObject& vao, const IndexBuffer& elements, c
 {
     program.Use();
     vao.Bind();
-    GLCHECK(glDrawElements(GL_TRIANGLES, elements.GetCount(), GL_UNSIGNED_INT, NULL));
+    GLCHECK(glDrawElements(GL_TRIANGLES, (GLsizei)elements.GetCount(), GL_UNSIGNED_INT, NULL));
 }

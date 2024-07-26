@@ -19,8 +19,8 @@ namespace Engine
 
 	private:
 		// TODO: enum LogLevel to string
-		static const char* LogLevelString[];
-		static std::ofstream log;
+		static const char* s_logLevelString[];
+		static std::ofstream s_log;
 		static std::tm localtime_xp_now();
 		static std::string get_timestamp();
 

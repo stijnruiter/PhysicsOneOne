@@ -45,9 +45,10 @@ void main()
 class ShaderProgram
 {
 private:
-	std::string debugIdentifier;
-	unsigned int programId;
+	std::string m_debugIdentifier;
+	unsigned int m_programId;
 
+private:
 	unsigned int LoadFromSource(const GLenum shaderType, const std::string& source) const;
 	bool CheckShaderCompileStatus(const unsigned int shaderId) const;
 	bool CheckShaderProgramLinkStatus(const unsigned int shaderProgramId) const;

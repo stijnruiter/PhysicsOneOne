@@ -5,19 +5,19 @@
 
 VertexArrayObject::VertexArrayObject()
 {
-    GLCHECK(glGenVertexArrays(1, &vertexArrayId));
-    GLCHECK(glBindVertexArray(vertexArrayId));
+    GLCHECK(glGenVertexArrays(1, &m_vertexArrayId));
+    GLCHECK(glBindVertexArray(m_vertexArrayId));
 }
 
 VertexArrayObject::~VertexArrayObject()
 {
-    GLCHECK(glDeleteVertexArrays(1, &vertexArrayId));
-    vertexArrayId = 0;
+    GLCHECK(glDeleteVertexArrays(1, &m_vertexArrayId));
+    m_vertexArrayId = 0;
 }
 
 void VertexArrayObject::Bind() const
 {
-    GLCHECK(glBindVertexArray(vertexArrayId));
+    GLCHECK(glBindVertexArray(m_vertexArrayId));
 }
 
 void VertexArrayObject::Unbind() const

@@ -6,12 +6,14 @@
 class Texture
 {
 private:
-	int width = 0;
-	int height = 0;
+	// Image data
+	int m_width = 0;
+	int m_height = 0;
 	int nrChannels = 0;
 
-	unsigned int textureId = 0;
-	GLenum textureSlot;
+	// OpenGL texture data
+	unsigned int m_textureId = 0;
+	GLenum m_textureSlot;
 public:
 	Texture(const std::string& imageFilePath, const GLenum slot = GL_TEXTURE0);
 	~Texture();
