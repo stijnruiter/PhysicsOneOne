@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <GLFW\glfw3.h>
+#include "Window.hpp"
 
 class Camera
 {
@@ -28,7 +28,7 @@ private:
 public:
 	Camera(glm::vec3 position, glm::vec3 target);
 
-	void UpdateInput(GLFWwindow* window, float deltaTime);
+	void UpdateInput(Window& window, float deltaTime);
 	void UpdateMouse(double x, double y);
 
 	const glm::mat4& GetView() const;

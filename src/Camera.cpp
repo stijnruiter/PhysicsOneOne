@@ -21,33 +21,33 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction)
     UpdateView();
 }
 
-void Camera::UpdateInput(GLFWwindow* window, float deltaTime)
+void Camera::UpdateInput(Window& window, float deltaTime)
 {
     float distance = velocity * deltaTime;
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    if (window.IsKeyPressed(GLFW_KEY_W))
     {
         position += cameraDirection * distance;
     }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    if (window.IsKeyPressed(GLFW_KEY_S))
     {
         position -= cameraDirection * distance;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    if (window.IsKeyPressed(GLFW_KEY_A))
     {
         position += glm::normalize(glm::cross(worldUp, cameraDirection)) * distance;
     }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (window.IsKeyPressed(GLFW_KEY_D))
     {
         position -= glm::normalize(glm::cross(worldUp, cameraDirection)) * distance;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    if (window.IsKeyPressed(GLFW_KEY_SPACE))
     {
         position.y += distance;
     }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    if (window.IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
     {
         position.y -= distance;
     }

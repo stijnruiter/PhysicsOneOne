@@ -8,94 +8,29 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// TODO: Make some kind of window properties structure
-inline int Width(800);
-inline int Height(600);
-
 inline Camera camera(glm::vec3(0, 0, 3), glm::vec3(0, 0, -1));
 
-void processInput(GLFWwindow* window, double deltaTime)
+void processInput(Window& window, double deltaTime)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
+    if (window.IsKeyPressed(GLFW_KEY_ESCAPE))
+    {
+        window.Close();
+        return;
+    }
     camera.UpdateInput(window, (float)deltaTime);
 }
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    Width = width;
-    Height = height;
-    glViewport(0, 0, width, height);
-}
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-    camera.UpdateMouse(xpos, ypos);
-}
-
-const std::string DEFAULT_FRAGMENT_SHADER = R"(
-#version 330 core
-
-in vec2 TexCoord;
-in vec3 vertex_color;
-out vec4 FragColor;
-
-uniform sampler2D ourTexture;
-
-void main()
-{
-    FragColor = texture(ourTexture, TexCoord) * vec4(vertex_color, 1.0);
-}
-)";
-
-const std::string DEFAULT_VERTEX_SHADER = R"(
-#version 330 core
-
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec3 color;
-layout(location = 2) in vec2 texureCoordinates;
-
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-
-out vec3 vertex_color;
-out vec2 TexCoord;
-
-void main()
-{
-    gl_Position = projection * view * model * vec4(position, 1.0);
-    vertex_color = color;
-    TexCoord = texureCoordinates;
-}
-)";
 
 int main()
 {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    Engine::Logger::LogInfo("--------------------------------");
+    Engine::Logger::LogInfo("-------CREATE NEW SESSION-------");
+    Engine::Logger::LogInfo("--------------------------------");
 
-    GLFWwindow* window = glfwCreateWindow(Width, Height, "PhysicsOneOne", NULL, NULL);
-    if (window == NULL)
-    {
-        Engine::Logger::LogError("NOWINDOW");
-        glfwTerminate();
-        return -1;
-    }
-    Engine::Logger::LogVerbose("GLFW initialized");
+    Window window(800, 600, "Physics 101");
+    window.SetMouseCursor(false);
+    window.SetCursorPosCallback([](double x, double y) { camera.UpdateMouse(x, y); }); // bind callback directly?
+    window.SetFrameBufferCallback([](int width, int height) { glViewport(0, 0, width, height); });
 
-    glfwMakeContextCurrent(window);
-    
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        Engine::Logger::LogError("NOGLAD");
-        return -1;
-    }
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, mouse_callback);
     
     Engine::Logger::LogVerbose("GLAD initialized");
 
@@ -123,7 +58,6 @@ int main()
         0.0f, 1.0f, 0.0f,
         1.0f, 0.0f, 1.0f,
     };
-
     unsigned int indices[] = {
         0, 1, 2, 
         0, 2, 3,
@@ -151,9 +85,6 @@ int main()
         Renderer renderer;
         renderer.SetClearColor(0.2f, 0.3f, 0.3f);
 
-        Engine::Logger::LogCritical("Hello world");
-        Engine::Logger::LogCritical("Hello world {0}", 123);
-
         ShaderProgram shader("DEFAULT_SHADER");
         shader.Create(DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER);
         shader.Use();
@@ -180,7 +111,7 @@ int main()
 
         double deltaTime = 0.0;
         double lastFrame = 0.0;
-        while (!glfwWindowShouldClose(window))
+        while (!window.ShouldClose())
         {
             double currentFrame = glfwGetTime();
             deltaTime = currentFrame - lastFrame;
@@ -189,7 +120,7 @@ int main()
             processInput(window, deltaTime);
             glm::mat4 model(1);
             model = glm::rotate(model, (float)currentFrame, glm::vec3(0, 1, 0));
-            glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)Width / Height, 0.1f, 100.0f);
+            glm::mat4 projection = glm::perspective(glm::radians(45.0f), window.GetAspectRatio(), 0.1f, 100.0f);
 
             shader.SetUniformMatrix4("model", model);
             shader.SetUniformMatrix4("view", camera.GetView());
@@ -198,11 +129,10 @@ int main()
             renderer.Clear();
             renderer.Draw(vao, ib, shader);
 
-            glfwSwapBuffers(window);
+            window.SwapBuffers();
             glfwPollEvents();
         }
     }
     Engine::Logger::LogVerbose("Close window");
-    glfwTerminate();
     return 0;
 }

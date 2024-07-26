@@ -9,4 +9,6 @@
 #include "Texture.hpp"
 #include "Camera.hpp"
 
+#include "Window.hpp"
+
 #include "Renderer.hpp"
