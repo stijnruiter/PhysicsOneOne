@@ -3,6 +3,7 @@
 #include <glad\glad.h>
 #include <GLFW\glfw3.h>
 #include <string>
+#include "Event.hpp"
 
 class Window
 {
@@ -18,10 +19,10 @@ private:
 	bool InitializeGlad();
 
 	void AttachEventCallbacks();
-	
-	void(*m_callbackFrameBuffer)(unsigned int width, unsigned int height);
-	void(*m_callbackCursorPos)(double cursorX, double cursorY);
-	void(*m_callbackKey)(int key, int scancode, int action, int mods);
+
+	FrameBufferResizeEventCallback m_callbackFrameBuffer;
+	MouseMoveEventCallback m_callbackMouseMove;
+	KeyEventCallback m_keyEventCallback;
 
 public:
 	Window(int width, int height, std::string title);
@@ -33,9 +34,9 @@ public:
 
 	void Close();
 
-	void SetFrameBufferCallback(void(*callback)(unsigned int width, unsigned int height)) { m_callbackFrameBuffer = callback; }
-	void SetCursorPosCallback(void(*callback)(double cursorX, double cursorY)) { m_callbackCursorPos = callback; }
-	void SetKeyCallback(void(*callback)(int key, int scancode, int action, int mods)) { m_callbackKey = callback; }
+	void SetCallbackOnFrameBufferResize(const FrameBufferResizeEventCallback& callback) { m_callbackFrameBuffer = callback; }
+	void SetCallbackOnMouseMove(const MouseMoveEventCallback& callback) { m_callbackMouseMove = callback; }
+	void SetCallbackOnKey(const KeyEventCallback& callback) { m_keyEventCallback = callback; }
 
 	bool IsKeyPressed(int key) const;
 

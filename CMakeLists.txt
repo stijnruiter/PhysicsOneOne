@@ -65,6 +65,8 @@ set( PhysicsOneOneSource
         "src/Window.hpp"
         "src/Window.cpp"
 
+        "src/Event.hpp"
+
         "src/Scene/SceneBase.hpp"
         "src/Scene/RotatingCube.hpp"
         "src/Scene/RotatingCube.cpp"

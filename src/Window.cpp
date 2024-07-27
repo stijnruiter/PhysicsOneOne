@@ -35,8 +35,7 @@ bool Window::InitializeGlad()
 }
 
 Window::Window(int width, int height, std::string title) : 
-    m_width(width), m_height(height), m_title(title), 
-    m_callbackFrameBuffer(nullptr), m_callbackCursorPos(nullptr), m_callbackKey(nullptr)
+    m_width(width), m_height(height), m_title(title)
 {
     if (!InitializeGLFW())
         return;
@@ -73,24 +72,28 @@ void Window::AttachEventCallbacks()
         window.m_height = height;
         if (window.m_callbackFrameBuffer)
         {
-            window.m_callbackFrameBuffer(width, height);
+            FrameBufferResizeEvent frameBufferEvent(width, height);
+            window.m_callbackFrameBuffer(frameBufferEvent);
         }
     });
-    //glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
     glfwSetCursorPosCallback(m_window, [](GLFWwindow* glfwWindow, double x, double y)
     {
         Window& window = *(Window*)glfwGetWindowUserPointer(glfwWindow);
-        if (window.m_callbackCursorPos)
+        if (window.m_callbackMouseMove)
         {
-            window.m_callbackCursorPos(x, y);
+            MouseMoveEvent mouseEvent(x, y);
+            window.m_callbackMouseMove(mouseEvent);
         }
     });
+
     glfwSetKeyCallback(m_window, [](GLFWwindow* glfwWindow, int key, int scancode, int action, int mods)
     {
         Window& window = *(Window*)glfwGetWindowUserPointer(glfwWindow);
-        if (window.m_callbackKey)
+        if (window.m_keyEventCallback)
         {
-            window.m_callbackKey(key, scancode, action, mods);
+            KeyEvent keyEvent(key, action);
+            window.m_keyEventCallback(keyEvent);
         }
     });
 }

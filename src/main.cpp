@@ -10,18 +10,6 @@
 
 #include <memory>
 
-inline Camera camera(800, 600, glm::vec3(0, 0, 3), glm::vec3(0, 0, -1));
-
-void processInput(Window& window, double deltaTime)
-{
-    if (window.IsKeyPressed(GLFW_KEY_ESCAPE))
-    {
-        window.Close();
-        return;
-    }
-    camera.UpdateInput(window, (float)deltaTime);
-}
-
 int main()
 {
     Engine::Logger::LogInfo("--------------------------------");
@@ -29,16 +17,17 @@ int main()
     Engine::Logger::LogInfo("--------------------------------");
 
     Window window(800, 600, "Physics 101");
+    Camera camera(window.GetWidth(), window.GetHeight(), glm::vec3(0, 0, 3), glm::vec3(0, 0, -1));
     window.SetMouseCursor(false);
-    window.SetCursorPosCallback([](double x, double y) 
-    { 
-        camera.UpdateMouse(x, y); // bind callback directly?
-    }); 
-    window.SetFrameBufferCallback([](unsigned int width, unsigned int height) 
-    { 
-        camera.UpdateFrameBuffer(width, height); 
-        glViewport(0, 0, width, height); 
+    window.SetCallbackOnMouseMove([&camera](const MouseMoveEvent& eventArg) 
+    {
+        camera.UpdateMouse(eventArg.X, eventArg.Y);
     });
+    window.SetCallbackOnFrameBufferResize([&camera](const FrameBufferResizeEvent& eventArgs) 
+    {
+        camera.UpdateFrameBuffer(eventArgs.Width, eventArgs.Height);
+    });
+
 
     {// local scope for GL destructors before the context is deleted
         Renderer renderer;
@@ -56,7 +45,13 @@ int main()
             deltaTime = currentFrame - lastFrame;
             lastFrame = currentFrame;
 
-            processInput(window, deltaTime);
+            if (window.IsKeyPressed(GLFW_KEY_ESCAPE))
+            {
+                window.Close();
+                return 0;
+            }
+
+            camera.UpdateInput(window, (float)deltaTime);
             
             renderer.Clear();
             scene->Render(renderer, camera);
