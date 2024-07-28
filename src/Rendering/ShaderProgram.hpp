@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 
 
-const std::string DEFAULT_FRAGMENT_SHADER = R"(
+const std::string FRAGMENT_SHADER_VCOLOR_AND_TEXTURE = R"(
 #version 330 core
 
 in vec2 TexCoord;
@@ -20,7 +20,49 @@ void main()
 }
 )";
 
-const std::string DEFAULT_VERTEX_SHADER = R"(
+const std::string FRAGMENT_SHADER_UNIFORM_COLOR = R"(
+#version 330 core
+
+uniform vec4 color;
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = color;
+}
+)";
+
+const std::string FRAGMENT_SHADER_VARIABLE_COLOR = R"(
+#version 330 core
+
+uniform vec4 objectColor;
+uniform vec4 lightColor;
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = lightColor * objectColor;
+}
+)";
+
+
+const std::string VERTEX_SHADER_POS_MVP = R"(
+#version 330 core
+
+layout(location = 0) in vec3 position;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+    gl_Position = projection * view * model * vec4(position, 1.0);
+}
+)";
+
+
+const std::string VERTEX_SHADER_POS_VC_TEX_MVP = R"(
 #version 330 core
 
 layout(location = 0) in vec3 position;
@@ -63,6 +105,7 @@ public:
 	int GetUniformLocation(const std::string& uniformName);
 
 	void SetUniformMatrix4(const std::string& uniformName, const glm::mat4& mat);
+	void SetUniformVector4(const std::string& uniformName, const glm::vec4& mat);
 
 	void Use() const;
 	void Unuse() const;

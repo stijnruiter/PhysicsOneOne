@@ -40,6 +40,8 @@ set( PhysicsOneOneSource
 
         "src/Debug/gl_debug.hpp" 
         "src/Debug/gl_debug.cpp"
+        
+        "src/Math.hpp"
 
         "src/Rendering/ShaderProgram.hpp" 
         "src/Rendering/ShaderProgram.cpp"
@@ -70,8 +72,9 @@ set( PhysicsOneOneSource
         "src/Scene/SceneBase.hpp"
         "src/Scene/RotatingCube.hpp"
         "src/Scene/RotatingCube.cpp"
-
-        "src/Math.hpp"
+        "src/Scene/LightCube.hpp"
+        "src/Scene/LightCube.cpp"
+        
 )
 
 add_executable( PhysicsOneOne WIN32 ${PhysicsOneOneSource})

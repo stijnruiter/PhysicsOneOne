@@ -149,6 +149,16 @@ void ShaderProgram::SetUniformMatrix4(const std::string& uniformName, const glm:
 	GLCHECK(glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(mat)));
 }
 
+void ShaderProgram::SetUniformVector4(const std::string& uniformName, const glm::vec4& vec)
+{
+	int uniformLocation = GetUniformLocation(uniformName);
+	if (uniformLocation < 0)
+		return;
+
+	Use();
+	GLCHECK(glUniform4fv(uniformLocation, 1, glm::value_ptr(vec)));
+}
+
 void ShaderProgram::Use() const
 {
 	GLCHECK(glUseProgram(m_programId));

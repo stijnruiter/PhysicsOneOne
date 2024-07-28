@@ -14,3 +14,4 @@
 
 #include "Scene\SceneBase.hpp"
 #include "Scene\RotatingCube.hpp"
+#include "Scene\LightCube.hpp"

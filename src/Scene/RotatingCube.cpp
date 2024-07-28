@@ -53,7 +53,7 @@ RotatingCube::RotatingCube()
     };
 
     m_shader = std::make_unique<ShaderProgram>("ROTATING_CUBE");
-    m_shader->Create(DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER);
+    m_shader->Create(VERTEX_SHADER_POS_VC_TEX_MVP, FRAGMENT_SHADER_VCOLOR_AND_TEXTURE);
     m_shader->Use();
 
     m_vertexArrayObject = std::make_unique<VertexArrayObject>();

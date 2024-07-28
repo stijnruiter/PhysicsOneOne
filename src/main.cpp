@@ -28,12 +28,24 @@ int main()
         camera.UpdateFrameBuffer(eventArgs.Width, eventArgs.Height);
     });
 
+    std::vector<std::unique_ptr<SceneBase>> scenes;
+    scenes.push_back(std::make_unique<RotatingCube>());
+    scenes.push_back(std::make_unique<LightCube>());
+    size_t sceneIndex = 0;
+
+    window.SetCallbackOnKey([&sceneIndex, &scenes](const KeyEvent& eventArgs) 
+    {
+        if (eventArgs.Action == GLFW_PRESS && eventArgs.Key == GLFW_KEY_1)
+        {
+            sceneIndex = (sceneIndex + 1) % scenes.size();
+        }
+    });
+
 
     {// local scope for GL destructors before the context is deleted
         Renderer renderer;
-        renderer.SetClearColor(0.2f, 0.3f, 0.3f);
+        renderer.SetClearColor(0, 0, 0);
 
-        std::unique_ptr<SceneBase> scene = std::make_unique<RotatingCube>();
 
         GLCHECK(glEnable(GL_DEPTH_TEST));
 
@@ -54,8 +66,7 @@ int main()
             camera.UpdateInput(window, (float)deltaTime);
             
             renderer.Clear();
-            scene->Render(renderer, camera);
-
+            scenes[sceneIndex]->Render(renderer, camera);
             window.SwapBuffers();
             glfwPollEvents();
         }
