@@ -90,6 +90,11 @@ void Camera::UpdateFrameBuffer(unsigned int width, unsigned int height)
     m_projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
 }
 
+const glm::vec3& Camera::GetPosition() const
+{
+    return m_position;
+}
+
 const glm::mat4& Camera::GetView() const
 {
     return m_view;

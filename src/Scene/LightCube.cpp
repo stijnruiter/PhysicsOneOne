@@ -90,6 +90,7 @@ void LightCube::Render(Renderer& renderer, Camera& camera)
     glm::mat4 model(1.0f);
     model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0, 1, 0));
     m_shaderVariableLight->SetUniformVector3("lightPos", lightPos);
+    m_shaderVariableLight->SetUniformVector3("cameraPos", camera.GetPosition());
     m_shaderVariableLight->SetUniformMatrix4("model", model);
     m_shaderVariableLight->SetUniformMatrix4("invTransModel", glm::inverse(model), true);
     m_shaderVariableLight->SetUniformMatrix4("view", camera.GetView());

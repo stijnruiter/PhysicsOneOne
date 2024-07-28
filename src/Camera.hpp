@@ -34,6 +34,7 @@ public:
 	void UpdateMouse(double x, double y);
 	void UpdateFrameBuffer(unsigned int width, unsigned int height);
 
+	const glm::vec3& GetPosition() const;
 	const glm::mat4& GetView() const;
 	const glm::mat4& GetProjection() const;
 };
