@@ -83,17 +83,20 @@ LightCube::LightCube()
 
 void LightCube::Render(Renderer& renderer, Camera& camera)
 {
+    glm::vec3 lightPos(2.0f, 2.0f, 2.0f);
     // Draw variable light cube
     m_shaderVariableLight->Use();
     m_vertexArrayObject->Bind();
-    glm::mat4 model(1);
+    glm::mat4 model(1.0f);
+    model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0, 1, 0));
+    m_shaderVariableLight->SetUniformVector3("lightPos", lightPos);
     m_shaderVariableLight->SetUniformMatrix4("model", model);
+    m_shaderVariableLight->SetUniformMatrix4("invTransModel", glm::inverse(model), true);
     m_shaderVariableLight->SetUniformMatrix4("view", camera.GetView());
     m_shaderVariableLight->SetUniformMatrix4("projection", camera.GetProjection());
     renderer.Draw(*m_vertexArrayObject, *m_indexBuffer, *m_shaderVariableLight);
 
     // Draw const light cube
-    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
     model = glm::mat4(1.0f);
     model = glm::translate(model, lightPos);
     model = glm::scale(model, glm::vec3(0.2f));

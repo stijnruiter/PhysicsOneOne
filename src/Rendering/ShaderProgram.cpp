@@ -139,16 +139,25 @@ int ShaderProgram::GetUniformLocation(const std::string& uniformName)
 	return location;
 }
 
-void ShaderProgram::SetUniformMatrix4(const std::string& uniformName, const glm::mat4& mat)
+void ShaderProgram::SetUniformMatrix4(const std::string& uniformName, const glm::mat4& mat, bool transpose)
 {
 	int uniformLocation = GetUniformLocation(uniformName);
 	if (uniformLocation < 0)
 		return;
 
 	Use();
-	GLCHECK(glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(mat)));
+	GLCHECK(glUniformMatrix4fv(uniformLocation, 1, transpose, glm::value_ptr(mat)));
 }
 
+void ShaderProgram::SetUniformVector3(const std::string& uniformName, const glm::vec3& vec)
+{
+	int uniformLocation = GetUniformLocation(uniformName);
+	if (uniformLocation < 0)
+		return;
+
+	Use();
+	GLCHECK(glUniform3fv(uniformLocation, 1, glm::value_ptr(vec)));
+}
 void ShaderProgram::SetUniformVector4(const std::string& uniformName, const glm::vec4& vec)
 {
 	int uniformLocation = GetUniformLocation(uniformName);

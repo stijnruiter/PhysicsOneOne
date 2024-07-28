@@ -36,14 +36,26 @@ const std::string FRAGMENT_SHADER_VARIABLE_COLOR = R"(
 #version 330 core
 
 in vec3 faceNormal;
+in vec3 FragPos;
 
+uniform vec3 lightPos;
 uniform vec4 objectColor;
 uniform vec4 lightColor;
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = lightColor * objectColor * vec4(0.5 + 0.5*faceNormal, 1.0);
+
+	vec3 norm = normalize(faceNormal);
+	vec3 lightDir = normalize(lightPos - FragPos); 
+	float diff = max(dot(norm, lightDir), 0.0);
+	vec4 diffuse = vec4(diff * lightColor.xyz, 1.0);
+		
+	float ambientStrength = 0.1;
+    vec4 ambient = ambientStrength * lightColor;
+
+    vec4 result = (ambient + diffuse) * objectColor;
+    FragColor = result;
 }
 )";
 
@@ -69,15 +81,18 @@ layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 normal;
 
 out vec3 faceNormal;
+out vec3 FragPos;
 
+uniform mat4 invTransModel;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
 void main()
 {
-	faceNormal = normal;
-    gl_Position = projection * view * model * vec4(position + 0.1*normal, 1.0);
+	faceNormal = mat3(invTransModel) * normal; 
+    FragPos = vec3(model * vec4(position, 1.0));
+    gl_Position = projection * view * model * vec4(position, 1.0);
 }
 )";
 
@@ -124,7 +139,8 @@ public:
 	int GetAttribLocation(const std::string& attribName);
 	int GetUniformLocation(const std::string& uniformName);
 
-	void SetUniformMatrix4(const std::string& uniformName, const glm::mat4& mat);
+	void SetUniformMatrix4(const std::string& uniformName, const glm::mat4& mat, bool transpose = false);
+	void SetUniformVector3(const std::string& uniformName, const glm::vec3& mat);
 	void SetUniformVector4(const std::string& uniformName, const glm::vec4& mat);
 
 	void Use() const;
