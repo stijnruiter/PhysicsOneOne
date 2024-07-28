@@ -35,13 +35,15 @@ void main()
 const std::string FRAGMENT_SHADER_VARIABLE_COLOR = R"(
 #version 330 core
 
+in vec3 faceNormal;
+
 uniform vec4 objectColor;
 uniform vec4 lightColor;
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = lightColor * objectColor;
+    FragColor = lightColor * objectColor * vec4(0.5 + 0.5*faceNormal, 1.0);
 }
 )";
 
@@ -58,6 +60,24 @@ uniform mat4 projection;
 void main()
 {
     gl_Position = projection * view * model * vec4(position, 1.0);
+}
+)";
+const std::string VERTEX_SHADER_POS_NORMAL_MVP = R"(
+#version 330 core
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normal;
+
+out vec3 faceNormal;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+	faceNormal = normal;
+    gl_Position = projection * view * model * vec4(position + 0.1*normal, 1.0);
 }
 )";
 

@@ -5,34 +5,55 @@
 LightCube::LightCube()
 {
     float vertices[] = {
-         -0.5f, -0.5f, -0.5f,
-          0.5f, -0.5f, -0.5f,
-          0.5f,  0.5f, -0.5f,
-         -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, //0
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-         -0.5f, -0.5f, 0.5f, 
-          0.5f, -0.5f, 0.5f, 
-          0.5f,  0.5f, 0.5f, 
-         -0.5f,  0.5f, 0.5f, 
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, // 4
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, //8
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, //12
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, //16
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, //20
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f
     };
+
     unsigned int indices[] = {
         0, 1, 2,
         0, 2, 3,
 
-        1, 5, 6,
-        1, 6, 2,
-
-        0, 1, 5,
-        0, 5, 4,
-
-        0, 4, 7,
-        0, 7, 3,
-
-        3, 2, 6,
-        3, 6, 7,
-
         4, 5, 6,
-        4, 6, 7
+        4, 6, 7,
+
+        8, 9, 10,
+        8, 10, 11,
+
+        12, 13, 14,
+        12, 14, 15,
+
+        16, 17, 18,
+        16, 18, 19,
+
+        20, 21, 22,
+        20, 22, 23
     };
 
     // Create cube buffers
@@ -41,6 +62,7 @@ LightCube::LightCube()
 
     m_vertexBuffer = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
     m_vertexBuffer->DefineFloatAttribute(0, 3); // TODO: ASSERT both shaders use position at the same location
+    m_vertexBuffer->DefineFloatAttribute(1, 3); // TODO: ASSERT both shaders use position at the same location
     m_vertexArrayObject->AddBuffer(*m_vertexBuffer);
 
     m_indexBuffer = std::make_unique<IndexBuffer>(indices, sizeof(indices) / sizeof(unsigned int));
@@ -53,7 +75,7 @@ LightCube::LightCube()
 
     // Create variable light shader
     m_shaderVariableLight = std::make_unique<ShaderProgram>("VARIABLE_LIGHT_CUBE");
-    m_shaderVariableLight->Create(VERTEX_SHADER_POS_MVP, FRAGMENT_SHADER_VARIABLE_COLOR);
+    m_shaderVariableLight->Create(VERTEX_SHADER_POS_NORMAL_MVP, FRAGMENT_SHADER_VARIABLE_COLOR);
     m_shaderVariableLight->Use();
     m_shaderVariableLight->SetUniformVector4("lightColor", glm::vec4(0.5f));
     m_shaderVariableLight->SetUniformVector4("objectColor", glm::vec4(1.0f));
